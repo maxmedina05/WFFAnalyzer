@@ -15,11 +15,9 @@ int main(){
 	bool flag = false;
 	string formula = "((A) && (~(B))) -> ((~(~(A))) <> (B))";
 
-	if (isBalanced(formula)){
-		if (isWellFormedFormula(formula)){
-			cout << "Formula bien formulada" << endl;
-		}
-	}
+	if (isBalanced(formula) && isWellFormedFormula(formula))
+		cout << "Formula bien formulada" << endl;
+
 	else
 		cout << "Formula mal formulada" << endl;
 
@@ -77,17 +75,26 @@ bool isWellFormedFormula(string str)
 {
 	stringstream ss(str);
 	bool flag = false;
-	string word;
+	string word, lastWord;
 	while (ss >> word)
 	{
 		word.erase(remove(word.begin(), word.end(), '('), word.end());
 		word.erase(remove(word.begin(), word.end(), ')'), word.end());
 		word.erase(remove(word.begin(), word.end(), '~'), word.end());
 
+		if (isVariable(word) && flag == true)
+			return false;
+
+		if (isConector(word) && flag == false)
+			return false;
+
 		if (isVariable(word))
 			flag = true;
+
 		if (isConector(word))
 			flag = false;
+
+		lastWord = word;
 	}
 
 	return flag;
